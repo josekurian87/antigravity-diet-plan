@@ -672,6 +672,95 @@ body {
   gap: 1rem;
 }
 
+.planner-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.kerala-badge {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--primary);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+}
+
+.planner-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+/* Schedule View Mode Toggle */
+.view-mode-toggle {
+  display: inline-flex;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-glass);
+  border-radius: var(--radius-md);
+  padding: 0.2rem;
+  gap: 0.2rem;
+}
+
+.view-mode-btn {
+  background: transparent;
+  border: none;
+  color: var(--text-muted);
+  padding: 0.4rem 0.8rem;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all var(--transition-fast);
+}
+
+.view-mode-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-surface-elevated);
+}
+
+.view-mode-btn.active {
+  background: var(--primary);
+  color: #ffffff;
+  box-shadow: 0 2px 8px var(--primary-glow);
+}
+
+/* Alternate Plan Action Button */
+.btn-alternate-plan {
+  background: linear-gradient(135deg, var(--bg-surface-elevated) 0%, rgba(16, 185, 129, 0.18) 100%);
+  border: 1px solid var(--primary);
+  color: var(--text-primary);
+  padding: 0.55rem 1.15rem;
+  border-radius: var(--radius-md);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  box-shadow: 0 4px 14px var(--primary-glow);
+}
+
+.btn-alternate-plan:hover {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--accent-cyan) 100%);
+  color: #ffffff;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px var(--primary-glow);
+}
+
+.refresh-icon {
+  display: inline-block;
+  transition: transform 0.5s ease-in-out;
+}
+
+.refresh-icon.spinning {
+  transform: rotate(360deg);
+}
+
 .section-title {
   font-family: var(--font-heading);
   font-size: 1.5rem;
@@ -819,15 +908,33 @@ body {
   gap: 1rem;
 }
 
+.meal-title-sub-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.15rem;
+}
+
+.ing-count-badge {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--bg-primary);
+  padding: 0.1rem 0.45rem;
+  border-radius: var(--radius-full);
+  border: 1px solid var(--border-subtle);
+}
+
 .meal-icon-badge {
   font-size: 1.8rem;
-  width: 44px;
-  height: 44px;
+  width: 46px;
+  height: 46px;
   background: var(--bg-primary);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
   justify-content: center;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.2);
 }
 
 .meal-type-label {
@@ -836,13 +943,12 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.06em;
   color: var(--primary);
-  margin-bottom: 0.15rem;
   display: block;
 }
 
 .meal-item-name {
   font-family: var(--font-heading);
-  font-size: 1.15rem;
+  font-size: 1.18rem;
   font-weight: 700;
   color: var(--text-primary);
 }
@@ -909,27 +1015,37 @@ body {
 .meal-macros-row {
   display: flex;
   gap: 0.75rem;
-  margin-bottom: 1rem;
+  margin-bottom: 1.15rem;
   flex-wrap: wrap;
 }
 
 .meal-macro-pill {
-  padding: 0.3rem 0.75rem;
+  padding: 0.35rem 0.85rem;
   border-radius: var(--radius-full);
-  font-size: 0.8rem;
+  font-size: 0.82rem;
   font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .meal-macro-pill.p { background: var(--macro-protein-bg); color: var(--macro-protein); }
 .meal-macro-pill.c { background: var(--macro-carbs-bg); color: var(--macro-carbs); }
 .meal-macro-pill.f { background: var(--macro-fat-bg); color: var(--macro-fat); }
 
-/* Ingredients List */
+/* Ingredients Section (Decongested Grid) */
 .ingredients-section {
   background: var(--bg-surface);
-  border: 1px solid var(--border-subtle);
+  border: 1px solid var(--border-glass);
   border-radius: var(--radius-md);
-  padding: 1rem 1.25rem;
+  padding: 1.1rem 1.25rem;
+}
+
+.ingredients-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.85rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px dashed var(--border-subtle);
 }
 
 .ingredients-title {
@@ -937,29 +1053,48 @@ body {
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+.ingredients-sub-tag {
+  font-size: 0.74rem;
+  font-weight: 600;
   color: var(--text-muted);
-  margin-bottom: 0.75rem;
 }
 
-.ingredients-list {
-  list-style: none;
+.ingredients-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 0.5rem 1.25rem;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 0.65rem 0.85rem;
 }
 
-.ingredient-item {
+.ingredient-chip {
+  background: var(--bg-glass);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.45rem 0.75rem;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-size: 0.88rem;
-  padding: 0.3rem 0;
-  border-bottom: 1px dashed var(--border-subtle);
+  gap: 0.5rem;
+  transition: all var(--transition-fast);
+}
+
+.ingredient-chip:hover {
+  border-color: var(--primary);
+  background: var(--bg-surface-elevated);
+}
+
+.ing-bullet {
+  color: var(--primary);
+  font-weight: 800;
 }
 
 .ing-name {
   color: var(--text-primary);
   font-weight: 500;
+  font-size: 0.86rem;
+  flex: 1;
 }
 
 .ing-quantity {
@@ -968,7 +1103,25 @@ body {
   background: var(--primary-light);
   padding: 0.15rem 0.55rem;
   border-radius: var(--radius-sm);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+/* Display Mode Specific Layout Overrides */
+.display-mode-ingredients .ingredients-section {
+  background: var(--bg-surface-elevated);
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.display-mode-ingredients .ingredient-chip {
+  background: var(--bg-primary);
+  border-color: var(--border-glass);
+  padding: 0.55rem 0.85rem;
+}
+
+.display-mode-meals .ingredients-section {
+  border-color: var(--border-subtle);
 }
 
 /* All Days View */

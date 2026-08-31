@@ -5,7 +5,7 @@
  */
 
 import { createDietStore } from "./store.js";
-import { renderBMIBadge, renderSummaryBanner, renderWeeklyPlan, renderGroceryList, setupGroceryActions, showToast } from "./ui.js";
+import { renderBMIBadge, renderSummaryBanner, renderWeeklyPlan, renderGroceryList, setupGroceryActions, setupPlannerHeaderActions, showToast } from "./ui.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   try {
@@ -28,7 +28,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 5. Setup Grocery Actions (Copy, Print, Clear)
     setupGroceryActions(store);
 
-    // 6. Setup Preset Buttons
+    // 6. Setup Planner Header Actions (Check Alternate Plan, View Mode Toggles)
+    setupPlannerHeaderActions(store);
+
+    // 7. Setup Preset Buttons
     initQuickPresets(store);
 
     // 7. Subscribe UI Views to Store updates

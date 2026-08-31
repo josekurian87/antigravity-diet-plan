@@ -22,6 +22,8 @@ const DEFAULT_STATE = {
   portionScale: 1.0,
   activeDay: "monday",
   viewMode: "tabs", // "tabs" or "all"
+  displayMode: "meals", // "meals", "ingredients", "combined"
+  alternateSeed: 0,
   checkedGroceryItems: [],
 
   // Loaded Config
@@ -55,6 +57,7 @@ function loadPersistedState() {
       activity: parsed.activity || undefined,
       dietPreference: parsed.dietPreference || undefined,
       timeframe: parsed.timeframe || undefined,
+      displayMode: parsed.displayMode || undefined,
       checkedGroceryItems: Array.isArray(parsed.checkedGroceryItems) ? parsed.checkedGroceryItems : []
     };
   } catch (err) {
@@ -77,6 +80,7 @@ function persistState(state) {
       activity: state.activity,
       dietPreference: state.dietPreference,
       timeframe: state.timeframe,
+      displayMode: state.displayMode,
       checkedGroceryItems: state.checkedGroceryItems
     };
     localStorage.setItem(STORAGE_KEY, JSON.stringify(dataToSave));
@@ -116,7 +120,8 @@ function recompute(state) {
       state.dietPreference,
       state.timeframe,
       state.caloricTarget.targetCalories,
-      state.portionScale
+      state.portionScale,
+      state.alternateSeed || 0
     );
 
     // 6. Macro Distribution
@@ -178,7 +183,7 @@ export function createDietStore(initialConfig = null) {
       changedProperties.add(prop);
 
       // Recompute metrics when inputs or config change
-      const inputProps = ["height", "weight", "age", "gender", "activity", "dietPreference", "timeframe", "portionScale", "dietConfig"];
+      const inputProps = ["height", "weight", "age", "gender", "activity", "dietPreference", "timeframe", "portionScale", "dietConfig", "alternateSeed"];
       if (inputProps.includes(prop)) {
         recompute(target);
       }
@@ -225,6 +230,10 @@ export function createDietStore(initialConfig = null) {
 
     clearCheckedGroceries() {
       proxyState.checkedGroceryItems = [];
+    },
+
+    generateAlternatePlan() {
+      proxyState.alternateSeed = (proxyState.alternateSeed || 0) + 1;
     }
   };
 }

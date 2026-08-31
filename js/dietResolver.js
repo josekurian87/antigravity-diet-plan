@@ -14,8 +14,9 @@ const DAYS_OF_WEEK = ["monday", "tuesday", "wednesday", "thursday", "friday", "s
  * @param {string} timeframeKey - "accelerated_8" | "moderate_16" | "gradual_24"
  * @param {number} targetCalories - Computed target calories
  * @param {number} portionScale - User multiplier or auto scale (1.0 = baseline)
+ * @param {number} alternateSeed - Seed offset for refreshing alternate meal & ingredient combinations
  */
-export function resolveDietPlan(dietConfig, bmiBracket, dietPreference, timeframeKey, targetCalories, portionScale = 1.0) {
+export function resolveDietPlan(dietConfig, bmiBracket, dietPreference, timeframeKey, targetCalories, portionScale = 1.0, alternateSeed = 0) {
   if (!dietConfig || !dietConfig.bmi_brackets) {
     throw new Error("Invalid or uninitialized diet configuration.");
   }
@@ -66,7 +67,10 @@ export function resolveDietPlan(dietConfig, bmiBracket, dietPreference, timefram
   const standardMondayMeals = brackets.overweight?.diet_variants?.standard?.accelerated_8?.weekly_plan?.monday || primaryDayMeals;
   const scaleMultiplier = portionScale && portionScale > 0 ? portionScale : 1.0;
 
-  DAYS_OF_WEEK.forEach((day, index) => {
+  // Build candidate meal pools for alternate plan variations
+  const candidatePools = buildCandidateMealPools(dietConfig, dietPreference);
+
+  DAYS_OF_WEEK.forEach((day, dayIndex) => {
     let dayMeals = rawWeeklyPlan[day];
 
     if (!dayMeals || dayMeals.length === 0) {
@@ -76,13 +80,27 @@ export function resolveDietPlan(dietConfig, bmiBracket, dietPreference, timefram
         dayMeals = fallbackDayMeals;
       } else {
         // Rotate from defined days with clean cloning
-        const sourceDayKey = definedDays[index % definedDays.length] || primaryDayKey;
+        const sourceDayKey = definedDays[dayIndex % definedDays.length] || primaryDayKey;
         const sourceMeals = rawWeeklyPlan[sourceDayKey] || standardMondayMeals;
         dayMeals = JSON.parse(JSON.stringify(sourceMeals));
       }
     }
 
-    fullWeeklyPlan[day] = dayMeals.map(meal => {
+    // Apply alternate plan variation if alternateSeed > 0
+    let processedDayMeals = dayMeals;
+    if (alternateSeed > 0) {
+      processedDayMeals = dayMeals.map((meal, slotIdx) => {
+        const pool = candidatePools[meal.meal_type];
+        if (pool && pool.length > 0) {
+          // Select a unique alternate meal based on seed, dayIndex, and slotIdx
+          const idx = (dayIndex * 5 + slotIdx * 11 + alternateSeed * 7) % pool.length;
+          return JSON.parse(JSON.stringify(pool[idx]));
+        }
+        return meal;
+      });
+    }
+
+    fullWeeklyPlan[day] = processedDayMeals.map(meal => {
       const scaledCalories = Math.round(meal.calories_kcal * scaleMultiplier);
       const scaledWeight = Math.round(meal.total_weight_g * scaleMultiplier);
       const scaledProtein = meal.protein_g ? Math.round(meal.protein_g * scaleMultiplier) : undefined;
@@ -142,6 +160,53 @@ export function resolveDietPlan(dietConfig, bmiBracket, dietPreference, timefram
     dailyCalorieRange,
     weeklyPlan: fullWeeklyPlan,
     dailyTotals,
-    portionScale: scaleMultiplier
+    portionScale: scaleMultiplier,
+    alternateSeed
   };
 }
+
+/**
+ * Builds candidate meal pools grouped by meal type from dietConfig
+ */
+function buildCandidateMealPools(dietConfig, dietPreference) {
+  const pools = {
+    Breakfast: [],
+    Lunch: [],
+    Snack: [],
+    Dinner: []
+  };
+
+  function traverse(obj) {
+    if (!obj || typeof obj !== "object") return;
+    if (Array.isArray(obj)) {
+      obj.forEach(item => {
+        if (item && item.meal_type && item.item_name && Array.isArray(item.ingredients)) {
+          const type = item.meal_type;
+          if (pools[type] && !pools[type].some(m => m.item_name === item.item_name)) {
+            pools[type].push(item);
+          }
+        } else {
+          traverse(item);
+        }
+      });
+    } else {
+      Object.entries(obj).forEach(([key, val]) => {
+        if (key === "diet_variants" && val && typeof val === "object") {
+          if (val[dietPreference]) {
+            traverse(val[dietPreference]);
+          } else if (val.standard) {
+            traverse(val.standard);
+          } else {
+            traverse(val);
+          }
+        } else {
+          traverse(val);
+        }
+      });
+    }
+  }
+
+  traverse(dietConfig);
+  return pools;
+}
+

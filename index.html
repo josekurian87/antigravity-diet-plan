@@ -17,10 +17,10 @@
     <!-- Top Header -->
     <header class="app-header">
       <div class="brand-wrapper">
-        <div class="brand-logo-icon" aria-hidden="true">🥑</div>
+        <div class="brand-logo-icon" aria-hidden="true">🌴</div>
         <div>
-          <h1 class="brand-title">Antigravity Diet Planner</h1>
-          <p class="brand-subtitle">Reactive Caloric & Weekly Nutrition Architecture</p>
+          <h1 class="brand-title">Kerala Diet Planner</h1>
+          <p class="brand-subtitle">Authentic Kerala Caloric & Weekly Nutrition Architecture</p>
         </div>
       </div>
 
@@ -128,10 +128,10 @@
           <div class="form-group">
             <label for="select-diet" class="form-label">Dietary Preference</label>
             <select id="select-diet" class="form-select">
-              <option value="standard" selected>Standard / Balanced</option>
-              <option value="vegetarian">Vegetarian (Plant + Dairy/Eggs)</option>
-              <option value="vegan">Vegan (100% Plant-Based)</option>
-              <option value="high_protein">High-Protein Fitness</option>
+              <option value="standard" selected>Standard Kerala (Fish/Chicken/Meat)</option>
+              <option value="vegetarian">Kerala Vegetarian (Sadya Style)</option>
+              <option value="vegan">Kerala Vegan (Plant-Based)</option>
+              <option value="high_protein">High-Protein Fitness Kerala</option>
             </select>
           </div>
 
@@ -202,7 +202,7 @@
               </div>
             </div>
 
-          </div>
+            </div>
 
           <!-- Macro Nutrient Split Multi-Bar -->
           <div class="macro-section-wrap">
@@ -232,7 +232,28 @@
         <!-- Weekly Diet Schedule -->
         <section class="weekly-schedule-section" aria-label="7-Day Weekly Schedule">
           <div class="planner-section-header">
-            <h2 class="section-title">Weekly Diet Schedule</h2>
+            <div class="planner-title-group">
+              <h2 class="section-title">Weekly Diet Schedule</h2>
+              <span class="kerala-badge">🌴 Kerala Cuisine</span>
+            </div>
+
+            <div class="planner-header-actions">
+              <div class="view-mode-toggle" role="group" aria-label="Schedule View Focus">
+                <button type="button" class="view-mode-btn active" id="btn-view-meals" data-display-mode="meals" title="Meals Focus">
+                  <span>🍱</span> Meals
+                </button>
+                <button type="button" class="view-mode-btn" id="btn-view-ingredients" data-display-mode="ingredients" title="Ingredients Focus">
+                  <span>🥦</span> Ingredients
+                </button>
+                <button type="button" class="view-mode-btn" id="btn-view-combined" data-display-mode="combined" title="Detailed View">
+                  <span>📋</span> Detailed
+                </button>
+              </div>
+
+              <button type="button" class="action-btn btn-alternate-plan" id="btn-alternate-plan" title="Generate alternate Kerala meal and ingredient combination">
+                <span class="refresh-icon">🔀</span> Check Alternate Plan
+              </button>
+            </div>
           </div>
 
           <!-- Day Tabs (Monday - Sunday + All) -->

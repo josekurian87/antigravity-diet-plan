@@ -154,7 +154,7 @@ export function renderSummaryBanner(state) {
  * Renders the 7-day Weekly Diet Schedule (Tabs & Day Content)
  */
 export function renderWeeklyPlan(state, store) {
-  const { resolvedPlan, activeDay, viewMode, portionScale } = state;
+  const { resolvedPlan, activeDay, viewMode, displayMode, portionScale } = state;
   if (!resolvedPlan || !resolvedPlan.weeklyPlan) return;
 
   const planContainer = document.getElementById("weekly-plan-container");
@@ -162,6 +162,9 @@ export function renderWeeklyPlan(state, store) {
   const dailySummaryEl = document.getElementById("active-day-summary");
 
   if (!planContainer || !tabsContainer) return;
+
+  // Sync active state on header view mode buttons
+  syncDisplayModeButtons(displayMode || "meals");
 
   // Render Day Tabs
   const days = Object.keys(resolvedPlan.weeklyPlan);
@@ -229,17 +232,18 @@ export function renderWeeklyPlan(state, store) {
 
   // Render Meals Container
   let mealsHtml = "";
+  const currentDisplay = displayMode || "meals";
 
   if (viewMode === "tabs") {
     const meals = resolvedPlan.weeklyPlan[activeDay] || [];
     mealsHtml = `
-      <div class="day-meals-grid" id="day-meals-${activeDay}">
-        ${meals.map((meal, idx) => renderMealCard(meal, idx, activeDay)).join("")}
+      <div class="day-meals-grid display-mode-${currentDisplay}" id="day-meals-${activeDay}">
+        ${meals.map((meal, idx) => renderMealCard(meal, idx, activeDay, currentDisplay)).join("")}
       </div>
     `;
   } else {
     // All 7 Days View
-    mealsHtml = `<div class="all-days-wrapper">`;
+    mealsHtml = `<div class="all-days-wrapper display-mode-${currentDisplay}">`;
     days.forEach(day => {
       const meals = resolvedPlan.weeklyPlan[day] || [];
       const totals = resolvedPlan.dailyTotals?.[day] || {};
@@ -255,7 +259,7 @@ export function renderWeeklyPlan(state, store) {
             </div>
           </div>
           <div class="day-meals-grid">
-            ${meals.map((meal, idx) => renderMealCard(meal, idx, day)).join("")}
+            ${meals.map((meal, idx) => renderMealCard(meal, idx, day, currentDisplay)).join("")}
           </div>
         </section>
       `;
@@ -286,26 +290,29 @@ export function renderWeeklyPlan(state, store) {
 }
 
 /**
- * Generates HTML for an individual Meal Card
+ * Generates HTML for an individual Meal Card with clear separation between Meals & Ingredients
  */
-function renderMealCard(meal, index, day) {
+function renderMealCard(meal, index, day, displayMode = "meals") {
   const icon = MEAL_ICONS[meal.meal_type] || "🍽️";
   const ingredients = meal.ingredients || [];
 
   return `
-    <article class="meal-card" data-meal-type="${meal.meal_type}" id="card-${day}-${index}">
+    <article class="meal-card mode-${displayMode}" data-meal-type="${meal.meal_type}" id="card-${day}-${index}">
       <header class="meal-card-header" role="button" tabindex="0" aria-expanded="true">
         <div class="meal-header-left">
           <span class="meal-icon-badge">${icon}</span>
           <div>
-            <span class="meal-type-label">${meal.meal_type}</span>
+            <div class="meal-title-sub-row">
+              <span class="meal-type-label">${meal.meal_type}</span>
+              <span class="ing-count-badge">🥦 ${ingredients.length} items</span>
+            </div>
             <h4 class="meal-item-name">${meal.item_name}</h4>
           </div>
         </div>
         <div class="meal-header-right">
           <div class="meal-metrics">
             <span class="meal-cal-badge">${meal.calories_kcal} kcal</span>
-            <span class="meal-weight-badge">${meal.total_weight_g}g total</span>
+            <span class="meal-weight-badge">${meal.total_weight_g}g portion</span>
           </div>
           <button type="button" class="accordion-toggle-btn" aria-label="Toggle meal details">
             <svg class="chevron-icon" viewBox="0 0 20 20" fill="currentColor">
@@ -318,23 +325,26 @@ function renderMealCard(meal, index, day) {
       <div class="meal-card-content">
         ${meal.protein_g ? `
           <div class="meal-macros-row">
-            <span class="meal-macro-pill p">Protein: <strong>${meal.protein_g}g</strong></span>
-            <span class="meal-macro-pill c">Carbs: <strong>${meal.carbs_g}g</strong></span>
-            <span class="meal-macro-pill f">Fat: <strong>${meal.fat_g}g</strong></span>
+            <span class="meal-macro-pill p">🍗 Protein: <strong>${meal.protein_g}g</strong></span>
+            <span class="meal-macro-pill c">🌾 Carbs: <strong>${meal.carbs_g}g</strong></span>
+            <span class="meal-macro-pill f">🥑 Fat: <strong>${meal.fat_g}g</strong></span>
           </div>
         ` : ''}
 
         <div class="ingredients-section">
-          <h5 class="ingredients-title">Ingredients & Precise Quantities:</h5>
-          <ul class="ingredients-list">
+          <div class="ingredients-section-header">
+            <h5 class="ingredients-title">🥗 Itemized Ingredients & Amounts</h5>
+            <span class="ingredients-sub-tag">Fresh Kerala Produce</span>
+          </div>
+          <div class="ingredients-grid">
             ${ingredients.map(ing => `
-              <li class="ingredient-item">
+              <div class="ingredient-chip">
                 <span class="ing-bullet">•</span>
                 <span class="ing-name">${ing.name}</span>
                 <span class="ing-quantity">${ing.quantity} ${ing.unit}</span>
-              </li>
+              </div>
             `).join("")}
-          </ul>
+          </div>
         </div>
       </div>
     </article>
@@ -493,6 +503,48 @@ function animateValue(element, start, end, duration) {
     }
     element.textContent = current.toLocaleString();
   }, stepTime);
+}
+
+/**
+ * Wires the "Check Alternate Plan" button and Schedule View Mode toggles
+ */
+export function setupPlannerHeaderActions(store) {
+  const alternateBtn = document.getElementById("btn-alternate-plan");
+  const viewBtns = document.querySelectorAll(".view-mode-btn");
+
+  if (alternateBtn) {
+    alternateBtn.addEventListener("click", () => {
+      const icon = alternateBtn.querySelector(".refresh-icon");
+      if (icon) {
+        icon.classList.add("spinning");
+        setTimeout(() => icon.classList.remove("spinning"), 600);
+      }
+      store.generateAlternatePlan();
+      showToast("✨ Refreshed Alternate Kerala Meals & Ingredients!");
+    });
+  }
+
+  viewBtns.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const mode = btn.getAttribute("data-display-mode");
+      if (mode) {
+        store.update("displayMode", mode);
+        syncDisplayModeButtons(mode);
+      }
+    });
+  });
+}
+
+function syncDisplayModeButtons(currentMode) {
+  const viewBtns = document.querySelectorAll(".view-mode-btn");
+  viewBtns.forEach(btn => {
+    const mode = btn.getAttribute("data-display-mode");
+    if (mode === currentMode) {
+      btn.classList.add("active");
+    } else {
+      btn.classList.remove("active");
+    }
+  });
 }
 
 function capitalize(str) {
