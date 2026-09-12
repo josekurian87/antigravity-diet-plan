@@ -525,11 +525,10 @@ function animateValue(element, start, end, duration) {
  */
 export function setupPlannerHeaderActions(store) {
   const alternateBtn = document.getElementById("btn-alternate-plan");
-  const headerAlternateBtn = document.getElementById("header-alternate-btn");
   const viewBtns = document.querySelectorAll(".view-mode-btn");
 
   const triggerSwap = () => {
-    const icon = (alternateBtn && alternateBtn.querySelector(".refresh-icon")) || (headerAlternateBtn && headerAlternateBtn.querySelector(".refresh-icon"));
+    const icon = alternateBtn && alternateBtn.querySelector(".refresh-icon");
     if (icon) {
       icon.classList.add("spinning");
       setTimeout(() => icon.classList.remove("spinning"), 600);
@@ -539,7 +538,6 @@ export function setupPlannerHeaderActions(store) {
   };
 
   if (alternateBtn) alternateBtn.addEventListener("click", triggerSwap);
-  if (headerAlternateBtn) headerAlternateBtn.addEventListener("click", triggerSwap);
 
   viewBtns.forEach(btn => {
     btn.addEventListener("click", () => {
@@ -571,72 +569,73 @@ function capitalize(str) {
 
 /**
  * Setup Mobile Bottom Navigation Bar (Footer Component)
+ * Supports smooth scroll navigation, visual pulse feedback, and IntersectionObserver scroll-sync.
  */
 export function setupBottomNavigation(store) {
   const navButtons = document.querySelectorAll(".nav-tab-btn");
+  if (!navButtons.length) return;
+
+  const setActiveTab = (targetId) => {
+    navButtons.forEach(btn => {
+      const btnTarget = btn.getAttribute("data-nav-target");
+      if (btnTarget === targetId) {
+        btn.classList.add("active");
+      } else {
+        btn.classList.remove("active");
+      }
+    });
+  };
+
+  const pulseHighlight = (el) => {
+    if (!el) return;
+    el.classList.remove("section-focus-pulse");
+    // Trigger reflow to restart animation
+    void el.offsetWidth;
+    el.classList.add("section-focus-pulse");
+    setTimeout(() => {
+      el.classList.remove("section-focus-pulse");
+    }, 1200);
+  };
+
   navButtons.forEach(btn => {
-    btn.addEventListener("click", () => {
-      const targetId = btn.getAttribute("data-nav-target");
+    btn.addEventListener("click", (e) => {
+      e.preventDefault();
+      const button = btn.closest("[data-nav-target]") || btn;
+      const targetId = button.getAttribute("data-nav-target");
       if (!targetId) return;
 
-      navButtons.forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
+      setActiveTab(targetId);
 
       const targetEl = document.getElementById(targetId);
       if (targetEl) {
-        targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
+        if (targetId === "section-params") {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        } else {
+          targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+        pulseHighlight(targetEl);
       }
     });
   });
-}
 
-/**
- * Setup Mobile Quick Presets Drawer / Modal
- */
-export function setupMobilePresetsDrawer(store, applyPresetCallback) {
-  const drawer = document.getElementById("mobile-presets-drawer");
-  const openBtn = document.getElementById("header-presets-btn");
-  const closeBtn = document.getElementById("drawer-close-btn");
-  const overlay = document.getElementById("drawer-overlay");
+  // Setup IntersectionObserver for auto scroll-sync
+  const sections = ["section-params", "section-summary", "section-schedule", "section-grocery"]
+    .map(id => document.getElementById(id))
+    .filter(Boolean);
 
-  const deficitBtn = document.getElementById("drawer-preset-deficit");
-  const normalBtn = document.getElementById("drawer-preset-normal");
-  const surplusBtn = document.getElementById("drawer-preset-surplus");
-
-  function openDrawer() {
-    if (drawer) {
-      drawer.classList.remove("hidden");
-      drawer.setAttribute("aria-hidden", "false");
-    }
-  }
-
-  function closeDrawer() {
-    if (drawer) {
-      drawer.classList.add("hidden");
-      drawer.setAttribute("aria-hidden", "true");
-    }
-  }
-
-  if (openBtn) openBtn.addEventListener("click", openDrawer);
-  if (closeBtn) closeBtn.addEventListener("click", closeDrawer);
-  if (overlay) overlay.addEventListener("click", closeDrawer);
-
-  if (deficitBtn) {
-    deficitBtn.addEventListener("click", () => {
-      if (applyPresetCallback) applyPresetCallback("deficit");
-      closeDrawer();
+  if ("IntersectionObserver" in window && sections.length) {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.25) {
+          setActiveTab(entry.target.id);
+        }
+      });
+    }, {
+      root: null,
+      rootMargin: "-10% 0px -40% 0px",
+      threshold: [0.25, 0.5]
     });
-  }
-  if (normalBtn) {
-    normalBtn.addEventListener("click", () => {
-      if (applyPresetCallback) applyPresetCallback("normal");
-      closeDrawer();
-    });
-  }
-  if (surplusBtn) {
-    surplusBtn.addEventListener("click", () => {
-      if (applyPresetCallback) applyPresetCallback("surplus");
-      closeDrawer();
-    });
+
+    sections.forEach(sec => observer.observe(sec));
   }
 }

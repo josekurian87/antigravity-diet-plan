@@ -10,7 +10,66 @@
   --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
-  /* Theme: Dark (Default) */
+  /* Theme: Light (Default) */
+  --bg-primary: #f8fafc;
+  --bg-secondary: #ffffff;
+  --bg-surface: #f1f5f9;
+  --bg-surface-elevated: #e2e8f0;
+  --bg-glass: rgba(255, 255, 255, 0.88);
+  --border-glass: rgba(0, 0, 0, 0.08);
+  --border-subtle: rgba(0, 0, 0, 0.05);
+
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+  --text-inverse: #ffffff;
+
+  /* Accent Colors */
+  --primary: #059669;
+  --primary-hover: #047857;
+  --primary-light: rgba(5, 150, 105, 0.12);
+  --primary-glow: rgba(5, 150, 105, 0.2);
+
+  --accent-cyan: #0284c7;
+  --accent-indigo: #4f46e5;
+  --accent-purple: #7c3aed;
+
+  /* Category & Macro Colors */
+  --macro-protein: #2563eb;
+  --macro-protein-bg: rgba(37, 99, 235, 0.12);
+  --macro-carbs: #d97706;
+  --macro-carbs-bg: rgba(217, 119, 6, 0.12);
+  --macro-fat: #db2777;
+  --macro-fat-bg: rgba(219, 39, 119, 0.12);
+
+  /* BMI Status Brackets */
+  --status-underweight: #0284c7;
+  --status-underweight-bg: rgba(2, 132, 199, 0.12);
+  --status-normal: #059669;
+  --status-normal-bg: rgba(5, 150, 105, 0.12);
+  --status-overweight: #d97706;
+  --status-overweight-bg: rgba(217, 119, 6, 0.12);
+  --status-obese: #dc2626;
+  --status-obese-bg: rgba(220, 38, 38, 0.12);
+
+  /* Elevation Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 16px 40px -8px rgba(0, 0, 0, 0.12);
+  --shadow-glow: 0 0 24px var(--primary-glow);
+
+  /* Radii */
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-full: 9999px;
+
+  --transition-fast: 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-smooth: 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* --- Dark Theme Override --- */
+[data-theme="dark"] {
   --bg-primary: #090d16;
   --bg-secondary: #111827;
   --bg-surface: #172033;
@@ -24,7 +83,6 @@
   --text-muted: #64748b;
   --text-inverse: #090d16;
 
-  /* Accent Colors */
   --primary: #10b981;
   --primary-hover: #059669;
   --primary-light: rgba(16, 185, 129, 0.15);
@@ -34,63 +92,9 @@
   --accent-indigo: #6366f1;
   --accent-purple: #8b5cf6;
 
-  /* Category & Macro Colors */
-  --macro-protein: #3b82f6;
-  --macro-protein-bg: rgba(59, 130, 246, 0.15);
-  --macro-carbs: #f59e0b;
-  --macro-carbs-bg: rgba(245, 158, 11, 0.15);
-  --macro-fat: #ec4899;
-  --macro-fat-bg: rgba(236, 72, 153, 0.15);
-
-  /* BMI Status Brackets */
-  --status-underweight: #38bdf8;
-  --status-underweight-bg: rgba(56, 189, 248, 0.15);
-  --status-normal: #10b981;
-  --status-normal-bg: rgba(16, 185, 129, 0.15);
-  --status-overweight: #f59e0b;
-  --status-overweight-bg: rgba(245, 158, 11, 0.15);
-  --status-obese: #ef4444;
-  --status-obese-bg: rgba(239, 68, 68, 0.15);
-
-  /* Elevation Shadows */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.4);
   --shadow-lg: 0 16px 40px -8px rgba(0, 0, 0, 0.5);
-  --shadow-glow: 0 0 30px var(--primary-glow);
-
-  /* Radii */
-  --radius-sm: 8px;
-  --radius-md: 14px;
-  --radius-lg: 20px;
-  --radius-full: 9999px;
-
-  --transition-fast: 0.18s cubic-bezier(0.4, 0, 0.2, 1);
-  --transition-smooth: 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-/* --- Light Theme Override --- */
-[data-theme="light"] {
-  --bg-primary: #f8fafc;
-  --bg-secondary: #ffffff;
-  --bg-surface: #f1f5f9;
-  --bg-surface-elevated: #e2e8f0;
-  --bg-glass: rgba(255, 255, 255, 0.85);
-  --border-glass: rgba(0, 0, 0, 0.08);
-  --border-subtle: rgba(0, 0, 0, 0.04);
-
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #64748b;
-  --text-inverse: #ffffff;
-
-  --primary: #059669;
-  --primary-hover: #047857;
-  --primary-light: rgba(5, 150, 105, 0.12);
-  --primary-glow: rgba(5, 150, 105, 0.2);
-
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
-  --shadow-md: 0 8px 24px -4px rgba(0, 0, 0, 0.08);
-  --shadow-lg: 0 16px 40px -8px rgba(0, 0, 0, 0.12);
 }
 
 /* --- Base & Reset --- */
@@ -161,20 +165,39 @@ body {
   box-shadow: 0 0 20px var(--primary-glow);
 }
 
+.brand-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-width: 0;
+  flex: 1;
+}
+
+.brand-text-block {
+  min-width: 0;
+  overflow: hidden;
+}
+
 .brand-title {
   font-family: var(--font-heading);
-  font-size: 1.75rem;
+  font-size: clamp(1.15rem, 4.5vw, 1.75rem);
   font-weight: 800;
   letter-spacing: -0.03em;
+  line-height: 1.25;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
   background: linear-gradient(120deg, var(--text-primary) 30%, var(--primary) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .brand-subtitle {
-  font-size: 0.88rem;
+  font-size: clamp(0.75rem, 3vw, 0.88rem);
   color: var(--text-secondary);
   font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .header-controls {
@@ -205,44 +228,49 @@ body {
   transform: translateY(-1px);
 }
 
-/* --- Quick Presets Bar --- */
-.presets-bar {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-bottom: 2rem;
-  flex-wrap: wrap;
-  padding: 0.75rem 1.25rem;
-  background: var(--bg-glass);
-  backdrop-filter: blur(12px);
-  border: 1px solid var(--border-glass);
-  border-radius: var(--radius-lg);
+/* --- Quick Presets Chips --- */
+.form-presets-group {
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border-subtle);
 }
 
 .presets-label {
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--text-muted);
+  margin-bottom: 0.6rem;
+  display: block;
+}
+
+.presets-chips-row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
 }
 
 .preset-chip {
   background: var(--bg-surface);
   border: 1px solid var(--border-glass);
   color: var(--text-primary);
-  padding: 0.4rem 0.9rem;
+  padding: 0.45rem 0.85rem;
   border-radius: var(--radius-full);
   font-size: 0.82rem;
   font-weight: 600;
   cursor: pointer;
   transition: all var(--transition-fast);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
 }
 
 .preset-chip:hover {
   border-color: var(--primary);
   background: var(--primary-light);
   color: var(--primary);
+  transform: translateY(-1px);
 }
 
 /* --- Main Layout Grid --- */
@@ -259,7 +287,6 @@ body {
   }
 }
 
-/* --- Input Card (Left Column) --- */
 .form-panel-card {
   background: var(--bg-glass);
   backdrop-filter: blur(16px);
@@ -269,6 +296,17 @@ body {
   box-shadow: var(--shadow-md);
   position: sticky;
   top: 1.5rem;
+  max-height: calc(100vh - 3rem);
+  overflow-y: auto;
+}
+
+.form-panel-card::-webkit-scrollbar {
+  width: 5px;
+}
+
+.form-panel-card::-webkit-scrollbar-thumb {
+  background: var(--border-glass);
+  border-radius: var(--radius-full);
 }
 
 .panel-title {
@@ -329,10 +367,12 @@ body {
 
 .form-select {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   background: var(--bg-surface);
   border: 1px solid var(--border-glass);
   color: var(--text-primary);
-  padding: 0.75rem 1rem;
+  padding: 0.75rem 2.2rem 0.75rem 1rem;
   border-radius: var(--radius-md);
   font-family: var(--font-body);
   font-size: 0.92rem;
@@ -342,8 +382,11 @@ body {
   appearance: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
   background-repeat: no-repeat;
-  background-position: right 1rem center;
-  background-size: 1.2rem;
+  background-position: right 0.75rem center;
+  background-size: 1.1rem;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .form-select:focus {
@@ -1347,11 +1390,16 @@ body {
   justify-content: space-between;
   align-items: center;
   width: 100%;
+  min-width: 0;
+  gap: 0.5rem;
 }
 
 .item-name {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   font-weight: 600;
+  min-width: 0;
+  word-break: break-word;
+  overflow-wrap: break-word;
 }
 
 .item-qty {
@@ -1362,6 +1410,7 @@ body {
   padding: 0.15rem 0.5rem;
   border-radius: var(--radius-sm);
   white-space: nowrap;
+  flex-shrink: 0;
 }
 
 /* --- Toast Message --- */
@@ -1451,6 +1500,12 @@ body {
   transition: all var(--transition-smooth);
 }
 
+@media (min-width: 1025px) {
+  .app-bottom-nav {
+    display: none !important;
+  }
+}
+
 .bottom-nav-container {
   display: flex;
   justify-content: space-around;
@@ -1520,5 +1575,274 @@ body {
     left: 1.5rem;
     right: 1.5rem;
     text-align: center;
+  }
+}
+
+/* --- Section Scroll & Focus Animation --- */
+#section-params,
+#section-summary,
+#section-schedule,
+#section-grocery {
+  scroll-margin-top: 1.5rem;
+}
+
+@keyframes sectionFocusPulse {
+  0% {
+    box-shadow: 0 0 0 0 var(--primary-glow);
+    transform: scale(1);
+  }
+  30% {
+    box-shadow: 0 0 25px 4px var(--primary-glow);
+    transform: scale(1.008);
+  }
+  100% {
+    box-shadow: var(--shadow-md);
+    transform: scale(1);
+  }
+}
+
+.section-focus-pulse {
+  animation: sectionFocusPulse 1s ease-out forwards;
+}
+
+/* --- Mobile Portrait Responsiveness & Ultra-Compact Zoom Scaling --- */
+@media (max-width: 640px) {
+  html {
+    font-size: 56%;
+    overflow-x: hidden;
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+
+  .app-container {
+    zoom: 0.68;
+    padding: 0.25rem 0.25rem 6.5rem;
+    overflow-x: hidden;
+  }
+
+  .app-bottom-nav {
+    zoom: 1;
+  }
+
+  .app-header {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1.25rem;
+    padding-bottom: 0.85rem;
+  }
+
+  .form-panel-card,
+  .summary-banner,
+  .grocery-section,
+  .all-day-section,
+  .day-summary-card {
+    padding: 1rem 0.85rem;
+    overflow-x: hidden;
+  }
+
+  .meal-card-header,
+  .meal-card-content {
+    padding: 0.85rem 0.75rem;
+  }
+
+  .meal-header-left {
+    min-width: 0;
+    flex: 1 1 auto;
+    gap: 0.6rem;
+  }
+
+  .meal-item-name {
+    font-size: 1rem;
+    word-break: break-word;
+    overflow-wrap: break-word;
+  }
+
+  .meal-icon-badge {
+    width: 38px;
+    height: 38px;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+
+  .meal-header-right {
+    gap: 0.5rem;
+    flex-shrink: 0;
+  }
+
+  .ingredients-grid {
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 0.5rem;
+  }
+
+  .grocery-items-grid {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .planner-section-header,
+  .grocery-section-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.75rem;
+  }
+
+  .planner-header-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .view-mode-toggle {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .view-mode-btn {
+    flex: 1;
+    justify-content: center;
+    padding: 0.4rem 0.35rem;
+    font-size: 0.78rem;
+  }
+
+  .btn-alternate-plan {
+    width: 100%;
+    justify-content: center;
+    padding: 0.55rem;
+  }
+
+  .grocery-actions {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.35rem;
+  }
+
+  .action-btn {
+    width: 100%;
+    justify-content: center;
+    padding: 0.45rem 0.25rem;
+    font-size: 0.75rem;
+  }
+
+  .day-tabs-scroll {
+    padding-bottom: 0.4rem;
+    margin-bottom: 1rem;
+  }
+
+  .day-tab-btn {
+    padding: 0.6rem 0.85rem;
+    min-width: 75px;
+  }
+
+  .day-name {
+    font-size: 0.88rem;
+  }
+
+  .day-cal-preview {
+    font-size: 0.7rem;
+  }
+
+  .calorie-huge-val {
+    font-size: 2.25rem;
+  }
+
+  .day-summary-macros,
+  .macro-legend-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.4rem;
+  }
+
+  .macro-tag {
+    font-size: 0.76rem;
+  }
+}
+
+/* Mobile Narrow Portrait Optimization (< 520px & < 480px) */
+@media (max-width: 520px) {
+  .form-row-duo {
+    grid-template-columns: 1fr;
+  }
+
+  .meal-card-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.6rem;
+  }
+
+  .meal-header-left {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .meal-header-right {
+    width: 100%;
+    justify-content: space-between;
+    border-top: 1px dashed var(--border-subtle);
+    padding-top: 0.5rem;
+    margin-top: 0.2rem;
+  }
+
+  .meal-metrics {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-align: left;
+  }
+
+  .meal-cal-badge,
+  .meal-weight-badge {
+    display: inline-block;
+  }
+
+  .section-title {
+    font-size: 1.15rem;
+  }
+
+  .brand-subtitle {
+    white-space: normal;
+  }
+}
+
+@media (max-width: 480px) {
+  html {
+    font-size: 50%;
+  }
+
+  .app-container {
+    zoom: 0.60;
+    padding: 0.2rem 0.2rem 6.5rem;
+  }
+}
+
+@media (max-width: 420px) {
+  .grocery-actions {
+    grid-template-columns: 1fr;
+    gap: 0.4rem;
+  }
+
+  .action-btn {
+    font-size: 0.8rem;
+    padding: 0.5rem;
+  }
+
+  .day-tab-btn {
+    min-width: 68px;
+    padding: 0.5rem 0.65rem;
+  }
+
+  .day-name {
+    font-size: 0.82rem;
+  }
+}
+
+@media (max-width: 375px) {
+  html {
+    font-size: 45%;
+  }
+
+  .app-container {
+    zoom: 0.52;
   }
 }

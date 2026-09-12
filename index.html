@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
-  <meta name="theme-color" content="#090d16" id="meta-theme-color">
+  <meta name="theme-color" content="#f8fafc" id="meta-theme-color">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Kerala Diet">
-  <meta name="description" content="Antigravity Weekly Diet Planner - Reactive, client-side nutritional engine with real-time BMI & TDEE calculation, 7-day itemized meal schedule, and aggregated grocery shopping list.">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Diet Planner">
+  <meta name="description" content="Weekly Diet & Grocery Planner - Reactive, client-side nutritional engine with real-time BMI & TDEE calculation, 7-day itemized meal schedule, and aggregated grocery shopping list.">
   <meta name="keywords" content="diet planner, weekly meal plan, calorie deficit calculator, BMI calculator, TDEE, macronutrient split, grocery list generator">
   <meta name="author" content="Antigravity">
-  <title>Weekly Diet Planner — Reactive Calorie, Macro & Meal Architecture</title>
+  <title>Weekly Diet & Grocery Planner — Reactive Calorie, Macro & Meal Architecture</title>
   <link rel="stylesheet" href="./css/styles.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥑</text></svg>">
 </head>
@@ -24,22 +24,14 @@
       <div class="brand-wrapper">
         <div class="brand-logo-icon" aria-hidden="true">🌴</div>
         <div class="brand-text-block">
-          <h1 class="brand-title">Kerala Diet Planner</h1>
-          <p class="brand-subtitle">Authentic Kerala Caloric & Weekly Nutrition Architecture</p>
+          <h1 class="brand-title">Weekly Diet & Grocery Planner</h1>
+          <p class="brand-subtitle">Personalized Caloric, Macro & Weekly Grocery Architecture</p>
         </div>
       </div>
 
       <div class="header-controls">
-        <button type="button" class="icon-btn header-btn-preset" id="header-presets-btn" aria-label="Quick Presets">
-          <span>⚡</span>
-          <span class="btn-text">Presets</span>
-        </button>
-        <button type="button" class="icon-btn header-btn-alternate" id="header-alternate-btn" aria-label="Check Alternate Meal Plan">
-          <span class="refresh-icon">🔀</span>
-          <span class="btn-text">Swap Plan</span>
-        </button>
         <button type="button" class="icon-btn" id="theme-toggle-btn" aria-label="Toggle Theme Mode">
-          <span id="theme-icon">☀️</span>
+          <span id="theme-icon">🌙</span>
           <span class="btn-text">Theme</span>
         </button>
       </div>
@@ -47,14 +39,6 @@
 
     <!-- Error Banner (if config fails to load) -->
     <div id="app-error-banner" class="safety-alert hidden" role="alert"></div>
-
-    <!-- Quick Presets -->
-    <nav class="presets-bar" aria-label="Quick Goal Presets">
-      <span class="presets-label">⚡ Quick Presets:</span>
-      <button type="button" class="preset-chip" id="preset-deficit">🔥 Fat Loss Deficit (Overweight / 16 Wks)</button>
-      <button type="button" class="preset-chip" id="preset-normal">⚖️ Balanced Maintenance (Normal / 24 Wks)</button>
-      <button type="button" class="preset-chip" id="preset-surplus">💪 Muscle Gain Surplus (Underweight / 16 Wks)</button>
-    </nav>
 
     <!-- Main Two-Column Grid -->
     <main class="main-grid">
@@ -64,6 +48,16 @@
         <h2 class="panel-title">
           <span>⚙️</span> Personal Parameters
         </h2>
+
+        <!-- Quick Goal Presets -->
+        <div class="form-presets-group">
+          <span class="presets-label">⚡ Quick Presets</span>
+          <div class="presets-chips-row">
+            <button type="button" class="preset-chip" id="preset-deficit" title="Fat Loss Deficit (16 Wks)">🔥 Fat Loss</button>
+            <button type="button" class="preset-chip" id="preset-normal" title="Balanced Maintenance (24 Wks)">⚖️ Maintenance</button>
+            <button type="button" class="preset-chip" id="preset-surplus" title="Muscle Gain Surplus (16 Wks)">💪 Muscle Gain</button>
+          </div>
+        </div>
 
         <form id="diet-form" onsubmit="event.preventDefault();">
           
@@ -351,43 +345,6 @@
       </button>
     </nav>
   </footer>
-
-  <!-- Mobile Quick Presets Drawer / Modal -->
-  <div id="mobile-presets-drawer" class="mobile-presets-drawer hidden" aria-hidden="true">
-    <div class="drawer-overlay" id="drawer-overlay"></div>
-    <div class="drawer-content">
-      <div class="drawer-header">
-        <div class="drawer-title-wrap">
-          <span>⚡</span>
-          <h3>Quick Goal Presets</h3>
-        </div>
-        <button type="button" class="drawer-close-btn" id="drawer-close-btn" aria-label="Close presets modal">✕</button>
-      </div>
-      <div class="drawer-body">
-        <button type="button" class="preset-card-item" id="drawer-preset-deficit">
-          <span class="preset-card-icon">🔥</span>
-          <div class="preset-card-info">
-            <strong>Fat Loss Deficit</strong>
-            <p>Targeted caloric deficit for sustainable weight loss (Overweight / 16 Wks)</p>
-          </div>
-        </button>
-        <button type="button" class="preset-card-item" id="drawer-preset-normal">
-          <span class="preset-card-icon">⚖️</span>
-          <div class="preset-card-info">
-            <strong>Balanced Maintenance</strong>
-            <p>Maintain healthy equilibrium and metabolic health (Normal / 24 Wks)</p>
-          </div>
-        </button>
-        <button type="button" class="preset-card-item" id="drawer-preset-surplus">
-          <span class="preset-card-icon">💪</span>
-          <div class="preset-card-info">
-            <strong>Muscle Gain Surplus</strong>
-            <p>Caloric surplus optimized for lean muscle building (Underweight / 16 Wks)</p>
-          </div>
-        </button>
-      </div>
-    </div>
-  </div>
 
   <!-- Main JavaScript App Entry Point -->
   <script type="module" src="./js/app.js?v=v2_classic"></script>

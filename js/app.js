@@ -13,7 +13,6 @@ import {
   setupGroceryActions, 
   setupPlannerHeaderActions, 
   setupBottomNavigation, 
-  setupMobilePresetsDrawer, 
   showToast 
 } from "./ui.js";
 
@@ -41,9 +40,8 @@ async function initApp() {
     // 6. Setup Planner Header Actions (Check Alternate Plan, View Mode Toggles)
     setupPlannerHeaderActions(store);
 
-    // 7. Setup Preset Buttons & Mobile Preset Drawer
+    // 7. Setup Preset Buttons
     initQuickPresets(store);
-    setupMobilePresetsDrawer(store, (presetType) => applyPreset(store, presetType));
 
     // 8. Setup Mobile Bottom Navigation Bar (Footer Component)
     setupBottomNavigation(store);
@@ -206,9 +204,8 @@ function initFormControls(store) {
 function initThemeToggle() {
   const toggleBtn = document.getElementById("theme-toggle-btn");
   const storedTheme = localStorage.getItem("antigravity_theme");
-  const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
 
-  const currentTheme = storedTheme || (prefersDark ? "dark" : "light");
+  const currentTheme = storedTheme || "light";
   document.documentElement.setAttribute("data-theme", currentTheme);
   updateThemeIcon(currentTheme);
 
