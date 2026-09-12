@@ -5,9 +5,19 @@
  */
 
 import { createDietStore } from "./store.js";
-import { renderBMIBadge, renderSummaryBanner, renderWeeklyPlan, renderGroceryList, setupGroceryActions, setupPlannerHeaderActions, showToast } from "./ui.js";
+import { 
+  renderBMIBadge, 
+  renderSummaryBanner, 
+  renderWeeklyPlan, 
+  renderGroceryList, 
+  setupGroceryActions, 
+  setupPlannerHeaderActions, 
+  setupBottomNavigation, 
+  setupMobilePresetsDrawer, 
+  showToast 
+} from "./ui.js";
 
-document.addEventListener("DOMContentLoaded", async () => {
+async function initApp() {
   try {
     // 1. Fetch Modular Diet Configuration
     const response = await fetch(`./diet-config.json?t=${Date.now()}`, { cache: "no-store" });
@@ -31,10 +41,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     // 6. Setup Planner Header Actions (Check Alternate Plan, View Mode Toggles)
     setupPlannerHeaderActions(store);
 
-    // 7. Setup Preset Buttons
+    // 7. Setup Preset Buttons & Mobile Preset Drawer
     initQuickPresets(store);
+    setupMobilePresetsDrawer(store, (presetType) => applyPreset(store, presetType));
 
-    // 7. Subscribe UI Views to Store updates
+    // 8. Setup Mobile Bottom Navigation Bar (Footer Component)
+    setupBottomNavigation(store);
+
+    // 9. Subscribe UI Views to Store updates
     store.subscribe((state, changedKeys) => {
       // BMI updates
       renderBMIBadge(state.bmi);
@@ -61,7 +75,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       errorBanner.innerHTML = `⚠️ <strong>Error loading configuration:</strong> ${error.message}. Please ensure the app is served via a local server.`;
     }
   }
-});
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener("DOMContentLoaded", initApp);
+} else {
+  initApp();
+}
 
 /**
  * Connects HTML form input elements with reactive store
@@ -90,30 +110,54 @@ function initFormControls(store) {
 
   // Sync Height
   if (heightInput) {
-    heightInput.addEventListener("input", (e) => {
+    const handleHeight = (e) => {
       const val = parseFloat(e.target.value);
-      if (val >= 80 && val <= 260) {
+      if (!isNaN(val) && val >= 80 && val <= 260) {
         store.update("height", val);
+      }
+    };
+    heightInput.addEventListener("input", handleHeight);
+    heightInput.addEventListener("change", handleHeight);
+    heightInput.addEventListener("blur", (e) => {
+      const val = parseFloat(e.target.value);
+      if (isNaN(val) || val < 80 || val > 260) {
+        e.target.value = store.state.height;
       }
     });
   }
 
   // Sync Weight
   if (weightInput) {
-    weightInput.addEventListener("input", (e) => {
+    const handleWeight = (e) => {
       const val = parseFloat(e.target.value);
-      if (val >= 25 && val <= 350) {
+      if (!isNaN(val) && val >= 25 && val <= 350) {
         store.update("weight", val);
+      }
+    };
+    weightInput.addEventListener("input", handleWeight);
+    weightInput.addEventListener("change", handleWeight);
+    weightInput.addEventListener("blur", (e) => {
+      const val = parseFloat(e.target.value);
+      if (isNaN(val) || val < 25 || val > 350) {
+        e.target.value = store.state.weight;
       }
     });
   }
 
   // Sync Age
   if (ageInput) {
-    ageInput.addEventListener("input", (e) => {
+    const handleAge = (e) => {
       const val = parseInt(e.target.value, 10);
-      if (val >= 12 && val <= 120) {
+      if (!isNaN(val) && val >= 12 && val <= 120) {
         store.update("age", val);
+      }
+    };
+    ageInput.addEventListener("input", handleAge);
+    ageInput.addEventListener("change", handleAge);
+    ageInput.addEventListener("blur", (e) => {
+      const val = parseInt(e.target.value, 10);
+      if (isNaN(val) || val < 12 || val > 120) {
+        e.target.value = store.state.age;
       }
     });
   }
@@ -181,8 +225,12 @@ function initThemeToggle() {
 
 function updateThemeIcon(theme) {
   const iconEl = document.getElementById("theme-icon");
+  const metaThemeColor = document.getElementById("meta-theme-color");
   if (iconEl) {
     iconEl.textContent = theme === "dark" ? "☀️" : "🌙";
+  }
+  if (metaThemeColor) {
+    metaThemeColor.setAttribute("content", theme === "dark" ? "#090d16" : "#f8fafc");
   }
 }
 
@@ -195,56 +243,70 @@ function initQuickPresets(store) {
   const presetSurplus = document.getElementById("preset-surplus");
 
   if (presetDeficit) {
-    presetDeficit.addEventListener("click", () => {
-      store.updateInputs({
-        height: 175,
-        weight: 88,
-        activity: "moderate",
-        dietPreference: "standard",
-        timeframe: "moderate_16"
-      });
-      syncInputsFromStore(store.state);
-      showToast("Applied Preset: Weight Loss & Lean Deficit");
-    });
+    presetDeficit.addEventListener("click", () => applyPreset(store, "deficit"));
   }
-
   if (presetNormal) {
-    presetNormal.addEventListener("click", () => {
-      store.updateInputs({
-        height: 175,
-        weight: 68,
-        activity: "moderate",
-        dietPreference: "standard",
-        timeframe: "gradual_24"
-      });
-      syncInputsFromStore(store.state);
-      showToast("Applied Preset: Healthy Balance & Maintenance");
-    });
+    presetNormal.addEventListener("click", () => applyPreset(store, "normal"));
   }
-
   if (presetSurplus) {
-    presetSurplus.addEventListener("click", () => {
-      store.updateInputs({
-        height: 180,
-        weight: 58,
-        activity: "active",
-        dietPreference: "high_protein",
-        timeframe: "moderate_16"
-      });
-      syncInputsFromStore(store.state);
-      showToast("Applied Preset: Caloric Surplus & Lean Mass");
+    presetSurplus.addEventListener("click", () => applyPreset(store, "surplus"));
+  }
+}
+
+export function applyPreset(store, presetType) {
+  if (presetType === "deficit") {
+    store.updateInputs({
+      height: 175,
+      weight: 88,
+      activity: "moderate",
+      dietPreference: "standard",
+      timeframe: "moderate_16"
     });
+    syncInputsFromStore(store.state);
+    showToast("🔥 Applied Preset: Weight Loss & Lean Deficit");
+  } else if (presetType === "normal") {
+    store.updateInputs({
+      height: 175,
+      weight: 68,
+      activity: "moderate",
+      dietPreference: "standard",
+      timeframe: "gradual_24"
+    });
+    syncInputsFromStore(store.state);
+    showToast("⚖️ Applied Preset: Healthy Balance & Maintenance");
+  } else if (presetType === "surplus") {
+    store.updateInputs({
+      height: 180,
+      weight: 58,
+      activity: "active",
+      dietPreference: "high_protein",
+      timeframe: "moderate_16"
+    });
+    syncInputsFromStore(store.state);
+    showToast("💪 Applied Preset: Caloric Surplus & Lean Mass");
   }
 }
 
 function syncInputsFromStore(state) {
   const heightInput = document.getElementById("input-height");
   const weightInput = document.getElementById("input-weight");
+  const ageInput = document.getElementById("input-age");
+  const genderSelect = document.getElementById("select-gender");
+  const activitySelect = document.getElementById("select-activity");
   const dietSelect = document.getElementById("select-diet");
   const timeframeSelect = document.getElementById("select-timeframe");
+  const portionSlider = document.getElementById("slider-portion");
+  const portionVal = document.getElementById("portion-scale-val");
 
   if (heightInput) heightInput.value = state.height;
   if (weightInput) weightInput.value = state.weight;
+  if (ageInput && state.age) ageInput.value = state.age;
+  if (genderSelect && state.gender) genderSelect.value = state.gender;
+  if (activitySelect && state.activity) activitySelect.value = state.activity;
   if (dietSelect) dietSelect.value = state.dietPreference;
   if (timeframeSelect) timeframeSelect.value = state.timeframe;
+  if (portionSlider && typeof state.portionScale === "number") {
+    portionSlider.value = state.portionScale;
+    if (portionVal) portionVal.textContent = `${Math.round(state.portionScale * 100)}%`;
+  }
 }

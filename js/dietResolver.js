@@ -101,17 +101,20 @@ export function resolveDietPlan(dietConfig, bmiBracket, dietPreference, timefram
     }
 
     fullWeeklyPlan[day] = processedDayMeals.map(meal => {
-      const scaledCalories = Math.round(meal.calories_kcal * scaleMultiplier);
-      const scaledWeight = Math.round(meal.total_weight_g * scaleMultiplier);
-      const scaledProtein = meal.protein_g ? Math.round(meal.protein_g * scaleMultiplier) : undefined;
-      const scaledCarbs = meal.carbs_g ? Math.round(meal.carbs_g * scaleMultiplier) : undefined;
-      const scaledFat = meal.fat_g ? Math.round(meal.fat_g * scaleMultiplier) : undefined;
+      const baseCal = typeof meal.calories_kcal === "number" ? meal.calories_kcal : parseFloat(meal.calories_kcal) || 0;
+      const baseWgt = typeof meal.total_weight_g === "number" ? meal.total_weight_g : parseFloat(meal.total_weight_g) || 0;
+
+      const scaledCalories = Math.round(baseCal * scaleMultiplier);
+      const scaledWeight = Math.round(baseWgt * scaleMultiplier);
+      const scaledProtein = typeof meal.protein_g === "number" ? Math.round(meal.protein_g * scaleMultiplier) : (parseFloat(meal.protein_g) ? Math.round(parseFloat(meal.protein_g) * scaleMultiplier) : undefined);
+      const scaledCarbs = typeof meal.carbs_g === "number" ? Math.round(meal.carbs_g * scaleMultiplier) : (parseFloat(meal.carbs_g) ? Math.round(parseFloat(meal.carbs_g) * scaleMultiplier) : undefined);
+      const scaledFat = typeof meal.fat_g === "number" ? Math.round(meal.fat_g * scaleMultiplier) : (parseFloat(meal.fat_g) ? Math.round(parseFloat(meal.fat_g) * scaleMultiplier) : undefined);
 
       const scaledIngredients = (meal.ingredients || []).map(ing => {
         const rawQty = parseFloat(ing.quantity);
         let scaledQty = ing.quantity;
         if (!isNaN(rawQty)) {
-          scaledQty = Math.round(rawQty * scaleMultiplier).toString();
+          scaledQty = (Math.round(rawQty * scaleMultiplier * 10) / 10).toString();
         }
         return {
           ...ing,

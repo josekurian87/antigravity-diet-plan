@@ -155,23 +155,31 @@ export function renderSummaryBanner(state) {
  */
 export function renderWeeklyPlan(state, store) {
   const { resolvedPlan, activeDay, viewMode, displayMode, portionScale } = state;
-  if (!resolvedPlan || !resolvedPlan.weeklyPlan) return;
-
   const planContainer = document.getElementById("weekly-plan-container");
   const tabsContainer = document.getElementById("day-tabs-container");
   const dailySummaryEl = document.getElementById("active-day-summary");
 
   if (!planContainer || !tabsContainer) return;
 
+  if (!resolvedPlan || !resolvedPlan.weeklyPlan) {
+    planContainer.innerHTML = `<div class="empty-state-card"><p style="padding: 1.5rem; text-align: center; color: var(--text-secondary);">⚠️ Loading meal plan configuration...</p></div>`;
+    return;
+  }
+
   // Sync active state on header view mode buttons
   syncDisplayModeButtons(displayMode || "meals");
 
-  // Render Day Tabs
+  // Normalize active day
   const days = Object.keys(resolvedPlan.weeklyPlan);
+  const normalizedActiveDay = (activeDay && days.includes(activeDay.toLowerCase()))
+    ? activeDay.toLowerCase()
+    : (days[0] || "monday");
+
+  // Render Day Tabs
   let tabsHtml = "";
 
   days.forEach(day => {
-    const isActive = viewMode === "tabs" && activeDay === day;
+    const isActive = viewMode === "tabs" && normalizedActiveDay === day.toLowerCase();
     const totals = resolvedPlan.dailyTotals?.[day] || { calories: 0 };
     tabsHtml += `
       <button type="button" class="day-tab-btn ${isActive ? 'active' : ''}" data-day="${day}" id="tab-btn-${day}">
@@ -209,11 +217,11 @@ export function renderWeeklyPlan(state, store) {
   // Render Daily Summary bar for active day
   if (dailySummaryEl) {
     if (viewMode === "tabs") {
-      const totals = resolvedPlan.dailyTotals?.[activeDay] || {};
+      const totals = resolvedPlan.dailyTotals?.[normalizedActiveDay] || {};
       dailySummaryEl.innerHTML = `
         <div class="day-summary-card">
           <div class="day-title-wrap">
-            <h3 class="active-day-title">${capitalize(activeDay)} Schedule</h3>
+            <h3 class="active-day-title">${capitalize(normalizedActiveDay)} Schedule</h3>
             <span class="day-summary-badge">${totals.calories || 0} Total Calories</span>
           </div>
           <div class="day-summary-macros">
@@ -235,10 +243,13 @@ export function renderWeeklyPlan(state, store) {
   const currentDisplay = displayMode || "meals";
 
   if (viewMode === "tabs") {
-    const meals = resolvedPlan.weeklyPlan[activeDay] || [];
+    const meals = resolvedPlan.weeklyPlan[normalizedActiveDay] || resolvedPlan.weeklyPlan[days[0]] || [];
     mealsHtml = `
-      <div class="day-meals-grid display-mode-${currentDisplay}" id="day-meals-${activeDay}">
-        ${meals.map((meal, idx) => renderMealCard(meal, idx, activeDay, currentDisplay)).join("")}
+      <div class="day-meals-grid display-mode-${currentDisplay}" id="day-meals-${normalizedActiveDay}">
+        ${meals.length > 0
+          ? meals.map((meal, idx) => renderMealCard(meal, idx, normalizedActiveDay, currentDisplay)).join("")
+          : `<p class="empty-state" style="padding: 1.5rem; text-align: center; color: var(--text-secondary);">No meals scheduled for this day.</p>`
+        }
       </div>
     `;
   } else {
@@ -377,6 +388,10 @@ export function renderGroceryList(state, store) {
   if (countBadge) {
     countBadge.textContent = `${totalItemsCount} items`;
   }
+  const navBadge = document.getElementById("nav-badge-grocery");
+  if (navBadge) {
+    navBadge.textContent = totalItemsCount.toString();
+  }
   if (progressFill) {
     progressFill.style.width = `${percentChecked}%`;
   }
@@ -510,19 +525,21 @@ function animateValue(element, start, end, duration) {
  */
 export function setupPlannerHeaderActions(store) {
   const alternateBtn = document.getElementById("btn-alternate-plan");
+  const headerAlternateBtn = document.getElementById("header-alternate-btn");
   const viewBtns = document.querySelectorAll(".view-mode-btn");
 
-  if (alternateBtn) {
-    alternateBtn.addEventListener("click", () => {
-      const icon = alternateBtn.querySelector(".refresh-icon");
-      if (icon) {
-        icon.classList.add("spinning");
-        setTimeout(() => icon.classList.remove("spinning"), 600);
-      }
-      store.generateAlternatePlan();
-      showToast("✨ Refreshed Alternate Kerala Meals & Ingredients!");
-    });
-  }
+  const triggerSwap = () => {
+    const icon = (alternateBtn && alternateBtn.querySelector(".refresh-icon")) || (headerAlternateBtn && headerAlternateBtn.querySelector(".refresh-icon"));
+    if (icon) {
+      icon.classList.add("spinning");
+      setTimeout(() => icon.classList.remove("spinning"), 600);
+    }
+    store.generateAlternatePlan();
+    showToast("✨ Refreshed Alternate Kerala Meals & Ingredients!");
+  };
+
+  if (alternateBtn) alternateBtn.addEventListener("click", triggerSwap);
+  if (headerAlternateBtn) headerAlternateBtn.addEventListener("click", triggerSwap);
 
   viewBtns.forEach(btn => {
     btn.addEventListener("click", () => {
@@ -550,4 +567,76 @@ function syncDisplayModeButtons(currentMode) {
 function capitalize(str) {
   if (!str) return "";
   return str.charAt(0).toUpperCase() + str.slice(1);
+}
+
+/**
+ * Setup Mobile Bottom Navigation Bar (Footer Component)
+ */
+export function setupBottomNavigation(store) {
+  const navButtons = document.querySelectorAll(".nav-tab-btn");
+  navButtons.forEach(btn => {
+    btn.addEventListener("click", () => {
+      const targetId = btn.getAttribute("data-nav-target");
+      if (!targetId) return;
+
+      navButtons.forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+
+      const targetEl = document.getElementById(targetId);
+      if (targetEl) {
+        targetEl.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    });
+  });
+}
+
+/**
+ * Setup Mobile Quick Presets Drawer / Modal
+ */
+export function setupMobilePresetsDrawer(store, applyPresetCallback) {
+  const drawer = document.getElementById("mobile-presets-drawer");
+  const openBtn = document.getElementById("header-presets-btn");
+  const closeBtn = document.getElementById("drawer-close-btn");
+  const overlay = document.getElementById("drawer-overlay");
+
+  const deficitBtn = document.getElementById("drawer-preset-deficit");
+  const normalBtn = document.getElementById("drawer-preset-normal");
+  const surplusBtn = document.getElementById("drawer-preset-surplus");
+
+  function openDrawer() {
+    if (drawer) {
+      drawer.classList.remove("hidden");
+      drawer.setAttribute("aria-hidden", "false");
+    }
+  }
+
+  function closeDrawer() {
+    if (drawer) {
+      drawer.classList.add("hidden");
+      drawer.setAttribute("aria-hidden", "true");
+    }
+  }
+
+  if (openBtn) openBtn.addEventListener("click", openDrawer);
+  if (closeBtn) closeBtn.addEventListener("click", closeDrawer);
+  if (overlay) overlay.addEventListener("click", closeDrawer);
+
+  if (deficitBtn) {
+    deficitBtn.addEventListener("click", () => {
+      if (applyPresetCallback) applyPresetCallback("deficit");
+      closeDrawer();
+    });
+  }
+  if (normalBtn) {
+    normalBtn.addEventListener("click", () => {
+      if (applyPresetCallback) applyPresetCallback("normal");
+      closeDrawer();
+    });
+  }
+  if (surplusBtn) {
+    surplusBtn.addEventListener("click", () => {
+      if (applyPresetCallback) applyPresetCallback("surplus");
+      closeDrawer();
+    });
+  }
 }
