@@ -295,7 +295,7 @@ body {
   flex-direction: column;
   gap: 1.75rem;
   width: 100%;
-  min-width: 900px;
+  min-width: 0;
 }
 
 .params-grid-form {
@@ -303,6 +303,18 @@ body {
   grid-template-columns: repeat(4, 1fr);
   gap: 1.25rem;
   align-items: stretch;
+}
+
+@media (max-width: 1024px) {
+  .params-grid-form {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 640px) {
+  .params-grid-form {
+    grid-template-columns: 1fr;
+  }
 }
 
 .panel-title {
