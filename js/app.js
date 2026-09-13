@@ -43,7 +43,10 @@ async function initApp() {
     // 7. Setup Preset Buttons
     initQuickPresets(store);
 
-    // 8. Setup Mobile Bottom Navigation Bar (Footer Component)
+    // 8. Setup Sticky Minimal Parameters Observer on Scroll
+    initStickyParamsObserver();
+
+    // 9. Setup Mobile Bottom Navigation Bar (Footer Component)
     setupBottomNavigation(store);
 
     // 9. Subscribe UI Views to Store updates
@@ -251,6 +254,12 @@ function initQuickPresets(store) {
 }
 
 export function applyPreset(store, presetType) {
+  // Highlight active preset chip
+  const chips = document.querySelectorAll(".preset-chip");
+  chips.forEach(c => c.classList.remove("active"));
+  const activeChip = document.getElementById(`preset-${presetType}`);
+  if (activeChip) activeChip.classList.add("active");
+
   if (presetType === "deficit") {
     store.updateInputs({
       height: 175,
@@ -306,4 +315,23 @@ function syncInputsFromStore(state) {
     portionSlider.value = state.portionScale;
     if (portionVal) portionVal.textContent = `${Math.round(state.portionScale * 100)}%`;
   }
+}
+
+/**
+  * Toggles minimal horizontal sticky view for Personal Parameters when scrolling down
+  */
+function initStickyParamsObserver() {
+  const paramsCard = document.getElementById("section-params");
+  if (!paramsCard) return;
+
+  const handleScroll = () => {
+    if (window.scrollY > 80) {
+      paramsCard.classList.add("is-sticky-minimal");
+    } else {
+      paramsCard.classList.remove("is-sticky-minimal");
+    }
+  };
+
+  window.addEventListener("scroll", handleScroll, { passive: true });
+  handleScroll();
 }

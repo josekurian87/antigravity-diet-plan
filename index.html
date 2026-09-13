@@ -43,23 +43,25 @@
     <!-- Main Two-Column Grid -->
     <main class="main-grid">
 
-      <!-- Left Column: Reactive Input Form -->
+      <!-- Top Horizontal: Reactive Input Form -->
       <aside class="form-panel-card" id="section-params" aria-label="Personal Nutrition Parameters">
-        <h2 class="panel-title">
-          <span>⚙️</span> Personal Parameters
-        </h2>
+        <div class="params-header-row">
+          <h2 class="panel-title">
+            <span>⚙️</span> Personal Parameters
+          </h2>
 
-        <!-- Quick Goal Presets -->
-        <div class="form-presets-group">
-          <span class="presets-label">⚡ Quick Presets</span>
-          <div class="presets-chips-row">
-            <button type="button" class="preset-chip" id="preset-deficit" title="Fat Loss Deficit (16 Wks)">🔥 Fat Loss</button>
-            <button type="button" class="preset-chip" id="preset-normal" title="Balanced Maintenance (24 Wks)">⚖️ Maintenance</button>
-            <button type="button" class="preset-chip" id="preset-surplus" title="Muscle Gain Surplus (16 Wks)">💪 Muscle Gain</button>
+          <!-- Quick Goal Presets -->
+          <div class="form-presets-group">
+            <span class="presets-label">⚡ Quick Presets</span>
+            <div class="presets-chips-row">
+              <button type="button" class="preset-chip" id="preset-deficit" title="Fat Loss Deficit (16 Wks)">🔥 Fat Loss</button>
+              <button type="button" class="preset-chip" id="preset-normal" title="Balanced Maintenance (24 Wks)">⚖️ Maintenance</button>
+              <button type="button" class="preset-chip" id="preset-surplus" title="Muscle Gain Surplus (16 Wks)">💪 Muscle Gain</button>
+            </div>
           </div>
         </div>
 
-        <form id="diet-form" onsubmit="event.preventDefault();">
+        <form id="diet-form" class="params-grid-form" onsubmit="event.preventDefault();">
           
           <!-- Height Input -->
           <div class="form-group">
@@ -79,10 +81,69 @@
             </div>
           </div>
 
+          <!-- Age & Gender Group -->
+          <div class="form-group">
+            <label for="input-age" class="form-label">Age</label>
+            <div class="input-with-unit">
+              <input type="number" id="input-age" class="form-input" min="15" max="100" step="1" value="28" required>
+              <span class="input-unit-tag">yr</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="select-gender" class="form-label">Sex</label>
+            <select id="select-gender" class="form-select">
+              <option value="male" selected>Male (+5)</option>
+              <option value="female">Female (-161)</option>
+              <option value="neutral">Neutral (0)</option>
+            </select>
+          </div>
+
+          <!-- Activity Level -->
+          <div class="form-group">
+            <label for="select-activity" class="form-label">Activity</label>
+            <select id="select-activity" class="form-select">
+              <option value="sedentary">Sedentary (1.20x)</option>
+              <option value="light">Lightly Active (1.375x)</option>
+              <option value="moderate" selected>Moderately Active (1.55x)</option>
+              <option value="active">Very Active (1.725x)</option>
+            </select>
+          </div>
+
+          <!-- Dietary Preference -->
+          <div class="form-group">
+            <label for="select-diet" class="form-label">Dietary Preference</label>
+            <select id="select-diet" class="form-select">
+              <option value="standard" selected>Standard Kerala</option>
+              <option value="vegetarian">Kerala Vegetarian</option>
+              <option value="vegan">Kerala Vegan</option>
+              <option value="high_protein">High-Protein Fitness</option>
+            </select>
+          </div>
+
+          <!-- Target Timeframe -->
+          <div class="form-group">
+            <label for="select-timeframe" class="form-label">Timeframe</label>
+            <select id="select-timeframe" class="form-select">
+              <option value="gradual_24">Gradual (24 Wks)</option>
+              <option value="moderate_16" selected>Moderate (16 Wks)</option>
+              <option value="accelerated_8">Accelerated (8 Wks)</option>
+            </select>
+          </div>
+
+          <!-- Portion Scaling Adjuster -->
+          <div class="form-group portion-scaler-box">
+            <div class="portion-scaler-header">
+              <span>Portion</span>
+              <strong id="portion-scale-val">100%</strong>
+            </div>
+            <input type="range" id="slider-portion" class="slider-input" min="0.8" max="1.4" step="0.05" value="1.0">
+          </div>
+
           <!-- Real-Time Reactive BMI Indicator -->
           <div class="bmi-indicator-container" id="bmi-display-box" aria-live="polite">
             <div class="bmi-header-row">
-              <span class="bmi-title">Real-Time BMI</span>
+              <span class="bmi-title">BMI</span>
               <span class="bmi-status-badge badge-overweight" id="bmi-badge">
                 <span id="bmi-value">26.1 — Overweight</span>
               </span>
@@ -98,67 +159,6 @@
               <span>25.0 Over</span>
               <span>30.0+ Obese</span>
             </div>
-          </div>
-
-          <!-- Age & Gender Duo -->
-          <div class="form-row-duo">
-            <div class="form-group">
-              <label for="input-age" class="form-label">Age</label>
-              <div class="input-with-unit">
-                <input type="number" id="input-age" class="form-input" min="15" max="100" step="1" value="28" required>
-                <span class="input-unit-tag">yr</span>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label for="select-gender" class="form-label">Biological Sex</label>
-              <select id="select-gender" class="form-select">
-                <option value="male" selected>Male (+5)</option>
-                <option value="female">Female (-161)</option>
-                <option value="neutral">Neutral (0)</option>
-              </select>
-            </div>
-          </div>
-
-          <!-- Activity Level -->
-          <div class="form-group">
-            <label for="select-activity" class="form-label">Activity Routine</label>
-            <select id="select-activity" class="form-select">
-              <option value="sedentary">Sedentary (desk job, 1.20x)</option>
-              <option value="light">Lightly Active (1–3 days/wk, 1.375x)</option>
-              <option value="moderate" selected>Moderately Active (3–5 days/wk, 1.55x)</option>
-              <option value="active">Very Active (6–7 days/wk, 1.725x)</option>
-            </select>
-          </div>
-
-          <!-- Dietary Preference -->
-          <div class="form-group">
-            <label for="select-diet" class="form-label">Dietary Preference</label>
-            <select id="select-diet" class="form-select">
-              <option value="standard" selected>Standard Kerala (Fish/Chicken/Meat)</option>
-              <option value="vegetarian">Kerala Vegetarian (Sadya Style)</option>
-              <option value="vegan">Kerala Vegan (Plant-Based)</option>
-              <option value="high_protein">High-Protein Fitness Kerala</option>
-            </select>
-          </div>
-
-          <!-- Target Timeframe -->
-          <div class="form-group">
-            <label for="select-timeframe" class="form-label">Target Timeframe</label>
-            <select id="select-timeframe" class="form-select">
-              <option value="gradual_24">Gradual / Sustainable (24 Weeks)</option>
-              <option value="moderate_16" selected>Moderate Progression (16 Weeks)</option>
-              <option value="accelerated_8">Accelerated / Strict (8 Weeks)</option>
-            </select>
-          </div>
-
-          <!-- Portion Scaling Adjuster -->
-          <div class="portion-scaler-box">
-            <div class="portion-scaler-header">
-              <span>Portion Scale</span>
-              <strong id="portion-scale-val">100%</strong>
-            </div>
-            <input type="range" id="slider-portion" class="slider-input" min="0.8" max="1.4" step="0.05" value="1.0">
           </div>
 
         </form>
