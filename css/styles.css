@@ -1177,20 +1177,70 @@ body {
 }
 
 /* Display Mode Specific Layout Overrides */
-.display-mode-ingredients .ingredients-section {
-  background: var(--bg-surface-elevated);
-  border-color: var(--primary);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+/* 1. Meals Mode: Focus on Meal info and Macro Pills, hide itemized ingredients */
+.meal-card.mode-meals .ingredients-section,
+.display-mode-meals .ingredients-section {
+  display: none !important;
 }
 
+.meal-card.mode-meals .meal-macros-row,
+.display-mode-meals .meal-macros-row {
+  display: flex !important;
+  margin-bottom: 0;
+}
+
+.meal-card.mode-meals .ing-count-badge,
+.display-mode-meals .ing-count-badge {
+  display: inline-flex !important;
+}
+
+/* 2. Ingredients Mode: Focus on Itemized Ingredients, hide Macro Pills */
+.meal-card.mode-ingredients .meal-macros-row,
+.display-mode-ingredients .meal-macros-row {
+  display: none !important;
+}
+
+.meal-card.mode-ingredients .ingredients-section,
+.display-mode-ingredients .ingredients-section {
+  display: block !important;
+  background: var(--bg-surface-elevated);
+  border-color: var(--primary);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.meal-card.mode-ingredients .ingredient-chip,
 .display-mode-ingredients .ingredient-chip {
   background: var(--bg-primary);
   border-color: var(--border-glass);
   padding: 0.55rem 0.85rem;
 }
 
-.display-mode-meals .ingredients-section {
-  border-color: var(--border-subtle);
+.meal-card.mode-ingredients .ing-count-badge,
+.display-mode-ingredients .ing-count-badge {
+  display: none !important;
+}
+
+/* 3. Detailed / Combined Mode: Show both Macro Pills and Itemized Ingredients */
+.meal-card.mode-combined .meal-macros-row,
+.meal-card.mode-detailed .meal-macros-row,
+.display-mode-combined .meal-macros-row,
+.display-mode-detailed .meal-macros-row {
+  display: flex !important;
+  margin-bottom: 1.15rem;
+}
+
+.meal-card.mode-combined .ingredients-section,
+.meal-card.mode-detailed .ingredients-section,
+.display-mode-combined .ingredients-section,
+.display-mode-detailed .ingredients-section {
+  display: block !important;
+}
+
+.meal-card.mode-combined .ing-count-badge,
+.meal-card.mode-detailed .ing-count-badge,
+.display-mode-combined .ing-count-badge,
+.display-mode-detailed .ing-count-badge {
+  display: inline-flex !important;
 }
 
 /* All Days View */
