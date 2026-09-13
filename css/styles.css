@@ -106,7 +106,7 @@
 
 html {
   scroll-behavior: smooth;
-  font-size: 16px;
+  font-size: 17px;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -295,41 +295,7 @@ body {
   flex-direction: column;
   gap: 1.75rem;
   width: 100%;
-  min-width: 0;
-}
-
-.outputs-panel {
-  width: 100%;
-}
-
-.form-panel-card {
-  background: var(--bg-glass);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border-glass);
-  border-radius: var(--radius-lg);
-  padding: 1.5rem;
-  box-shadow: var(--shadow-md);
-  position: relative;
-  top: auto;
-  z-index: 1;
-  transition: all var(--transition-smooth);
-  width: 100%;
-}
-
-.params-header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.25rem;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.params-header-row .form-presets-group {
-  margin-bottom: 0;
-  padding-bottom: 0;
-  border-bottom: none;
+  min-width: 900px;
 }
 
 .params-grid-form {
@@ -337,18 +303,6 @@ body {
   grid-template-columns: repeat(4, 1fr);
   gap: 1.25rem;
   align-items: stretch;
-}
-
-@media (max-width: 1024px) {
-  .params-grid-form {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (max-width: 640px) {
-  .params-grid-form {
-    grid-template-columns: 1fr;
-  }
 }
 
 .panel-title {
@@ -369,9 +323,9 @@ body {
 
 .form-label {
   display: block;
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: var(--text-secondary);
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--text-primary);
   margin-bottom: 0.4rem;
 }
 
@@ -386,10 +340,10 @@ body {
   background: var(--bg-surface);
   border: 1px solid var(--border-glass);
   color: var(--text-primary);
-  padding: 0.75rem 1rem;
+  padding: 0.8rem 1rem;
   border-radius: var(--radius-md);
   font-family: var(--font-body);
-  font-size: 1rem;
+  font-size: 1.05rem;
   font-weight: 600;
   transition: all var(--transition-fast);
 }
@@ -1541,7 +1495,7 @@ body {
   }
 }
 
-/* --- Floating Glass Navigation Bar (80% Component Width) --- */
+/* --- Floating Glass Navigation Bar (100% Visible on Mobile & Desktop) --- */
 .app-bottom-nav {
   position: fixed;
   bottom: 1.5rem;
@@ -1598,6 +1552,38 @@ body {
   background: var(--primary-light);
   font-weight: 700;
   box-shadow: 0 0 12px var(--primary-glow);
+}
+
+@media (max-width: 768px) {
+  .app-bottom-nav {
+    width: calc(100% - 1.25rem);
+    max-width: 480px;
+    bottom: 1rem;
+    padding: 0.35rem 0.5rem;
+  }
+
+  .bottom-nav-container {
+    gap: 0.25rem;
+  }
+
+  .nav-tab-btn {
+    flex: 1;
+    flex-direction: column;
+    gap: 0.2rem;
+    padding: 0.4rem 0.3rem;
+    font-size: 0.78rem;
+    text-align: center;
+    border-radius: var(--radius-md);
+  }
+
+  .nav-tab-icon {
+    font-size: 1.15rem;
+  }
+
+  .nav-tab-label {
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
 }
 
 .nav-tab-icon {
